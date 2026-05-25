@@ -1,0 +1,10 @@
+# Variáveis de ambiente e chaves secretas (Segurança)
+.env
+
+# Arquivos gerados pelo sistema Python
+__pycache__/
+*.pyc
+
+# Histórico local de consultas do usuário
+historico.json
+historico.txt
