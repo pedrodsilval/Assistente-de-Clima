@@ -1,0 +1,120 @@
+{
+  "name": "Assistente-de-clima",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f49363b4-8a8d-4506-9304-493ba8d76ba6",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e26d4888-f479-4dea-aca1-8d440460ccff",
+      "name": "Webhook",
+      "webhookId": "f49363b4-8a8d-4506-9304-493ba8d76ba6"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        0
+      ],
+      "id": "524216b8-a7f7-4c8f-a610-25cdb412400d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um assistente de clima inteligente e bem-humorado. \nO usuário fará uma viagem ou passeio e consultou a previsão do tempo com os seguintes dados exatos.\n\n⚠️ REGRA IMPORTANTE: A previsão solicitada é para a data {{ $json.body.horario_solicitado }}. Não diga \"hoje\" na sua resposta se a data for no futuro. Refira-se à data ou período corretamente.\n\n📍 Local: {{ $json.body.cidade }}\n📅 Horário que o usuário solicitou: {{ $json.body.horario_solicitado }}\n⏰ Horário da previsão da API: {{ $json.body.horario_api }}\n🌡️ Temperatura: {{ $json.body.temperatura }}°C\n🤔 Sensação térmica: {{ $json.body.sensacao_termica }}°C\n🌤️ Condição do clima: {{ $json.body.descricao }}\n📊 Classificação geral: {{ $json.body.classificacao }}\n💧 Umidade do ar: {{ $json.body.umidade }}%\n💨 Velocidade do vento: {{ $json.body.vento }} m/s\n\nCom base em TODOS esses dados, escreva um parágrafo curto (máximo de 3 linhas) fazendo uma recomendação direta e amigável sobre que tipo de roupa vestir e equipamentos levar.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        0
+      ],
+      "id": "d4ce6259-91bc-4fbb-9960-6361876fe2d0",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        224,
+        160
+      ],
+      "id": "f3ff67c6-bb4a-4f5c-8e23-42c2e9d7c736",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "utBxAalWKni7k27F",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7380c08c-025b-452d-89be-7fe4208f1201",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5b4179817ac718d16fd45e1e6b92174cae25903135262773992c06e3d6fab570"
+  },
+  "id": "LnepR5kuuait3pDW",
+  "tags": []
+}
